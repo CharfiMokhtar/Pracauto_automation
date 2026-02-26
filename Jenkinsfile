@@ -43,8 +43,25 @@ pipeline {
             script {
                 if (params.IMPORT_RESULTS) {
                     echo 'Importation des résultats d\'exécution vers Xray...'
-                    bat ' curl -H "Content-Type: application/json" -X POST -H "Authorization: Bearer %TOKEN%"  --data @"target/cucumber.json" https://xray.cloud.getxray.app/api/v2/import/execution/cucumber
-'
+
+                    def metadataMap = [
+                        fields: [
+                            project: [key: "POEI25G1P2"],
+                            summary: "${params.EXEC_NAME} - ${params.KEYS} - build#${env.BUILD_NUMBER}".toString(),
+                            description: "Execution automatique generee par Jenkins",
+                            issuetype: [name: "Test Execution"],
+                            labels: ["TNR"]
+                        ],
+                        xrayFields: [
+                            testPlanKey: params.TEST_PLAN
+                        ]
+                    ]
+                    def metadataJson = groovy.json.JsonOutput.toJson(metadataMap)
+
+                    writeFile file: 'info.json', text: metadataJson
+
+                    bat 'type info.json'
+                    bat 'curl -H "Content-Type: multipart/form-data" -X POST -F "info=@info.json;type=application/json" -F "results=@target/cucumber.json" -H "Authorization: Bearer %TOKEN%" https://xray.cloud.getxray.app/api/v2/import/execution/cucumber/multipart'
                 } else {
                     echo 'Import des résultats ignoré ⏭️'
                 }
