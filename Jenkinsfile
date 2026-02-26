@@ -7,7 +7,7 @@ pipeline {
 
     parameters {
         string(name: 'TEST_PLAN', defaultValue: 'POEI25G1P2-27', description: 'Clé du plan de test Xray')
-        string(name: 'KEYS', defaultValue: 'POEI25G1P2-27', description: 'Clé(s) des tests à exporter depuis Xray (séparées par des ;)')
+        string(name: 'KEYS', defaultValue: 'POEI25G1P2-31;POEI25G1P2-56', description: 'Clé(s) des tests à exporter depuis Xray (séparées par des ;)')
         booleanParam(name: 'HEADLESS', defaultValue: false, description: 'Exécuter le navigateur en mode headless (sans interface graphique)')
         string(name: 'URL_GRID', description: 'URL du Selenium Grid. Laisser vide pour une exécution en local')
         choice(name: 'BROWSER', choices: ['CHROME', 'EDGE', 'RANDOM'], description: 'Navigateur à utiliser pour l\'exécution des tests')
